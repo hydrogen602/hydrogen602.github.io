@@ -16,13 +16,16 @@ body {
 
 /* Code */
 .code {
-    border: 2px solid black;
+    border: 1px solid black;
     border-radius: 5px;
-    padding: 5px;
+    padding: 20px;
     text-align: left;
     background-color: white;
     color: black;
     font-family: monospace;
+    margin-left: 25%;
+    margin-right: 25%;
+    width: 50%;
 }
 
 /* Boxes */
