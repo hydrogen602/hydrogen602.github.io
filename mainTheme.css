@@ -33,8 +33,9 @@ body {
     border: 2px solid black;
     border-radius: 5px;
     display: inline-block;
+    position: relative;
     padding: 5px;
-    width: 100%;
+    width: 30%;
     text-align: center;
     background-color: white;
     min-height: 160px;
@@ -54,6 +55,7 @@ div.box h3 {
 /* Margin adjustment for paragraphs in boxes */
 div.box p {
     margin: 12px;
+    text-align: left;
 }
 
 /* Buttons for the box class */
