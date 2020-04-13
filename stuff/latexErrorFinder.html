@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- taken from https://github.com/CISSROV/2020-Project/blob/master/code/web/index.html, but that's also code i wrote -->
+    <title>Jonathan Rotter</title>
+    <link rel="stylesheet" href="/mainTheme.css">
+    <style type="text/css">
+        /* 
+         * make a shadown when hovering over a box, 
+         * plus change the mouse cursor to the clickable cursor
+         */
+        .box:hover {
+            box-shadow: 3px 3px 5px grey;
+            cursor: pointer;
+        }
+        #content-box {
+            text-align: center;
+            widows: 100%;
+            /*border: 1px red solid;*/
+            height: 100%;
+        }
+        #content-box img {
+            width: 30%;
+            margin: 20px;
+        }
+        #content-box h3 {
+            text-align: left;
+            padding-left: 3%;
+        }
+        #content-box p {
+            text-align: left;
+            text-indent: 2em;
+        }
+        #input {
+            min-width: 95%;
+            min-height: 100%;
+            border: 0px;
+            font-size: small;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 0px;
+            background-color: white;
+            text-align: left;
+        }
+        body, html, table, tr {
+            height: 100%;
+        }
+        .side {
+            display: inline-block;
+        }
+        /*tr, td {
+            border: 1px solid black;
+        }*/
+
+        .latexCmd {
+            color: blue;
+        }
+        .newLine {
+            color: red;
+        }
+        .latexCmdSpecifier {
+            color: teal;
+        }
+        .dollarSigns {
+            color: green;
+        }
+        .dollarSigns .latexCmd {
+            color: red;
+        }
+        .error {
+            background-color: firebrick;
+        }
+
+    </style>
+</head>
+<body onload="includeHTML()">
+    <!-- top banner -->
+    <div id='banner' style="height: 80px">
+        <div custom-include-html="/dropdown.html"></div>
+
+        <h1 id="title">Latex Help</h1>
+    </div>
+
+    <br/>
+
+    <div id="content-box">
+        <table style="width: 100%;">
+            <tr style="width: 100%;">
+                <td style="width: 66%;">
+                    <div contenteditable="true" id="input"></div>
+                </td>
+                <td style="width: 33%;">
+                    <p style="position: fixed; top: 50%;">Buttons<button onclick="analyze()" style="margin: 1em;">analyze</button></p>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <script src="/custom-include-html.js"></script>
+    <script>
+        function highlight(regex, css_cls, text, before, after) {
+            if (before == undefined) {
+                before = ''
+            }
+            if (after == undefined) {
+                after = ''
+            }
+            let splitted = text.split(regex)
+            // the odd indexes are latex words
+            for (let i = 1; i < splitted.length; i += 2) {
+                splitted[i] = before + '<span class="' + css_cls + '">' + splitted[i] + '</span>' + after
+            }
+
+            return splitted.join('')
+        }
+
+        function analyze() {
+            console.log('HI')
+
+            let lines = document.getElementById('input').children
+
+            let isWithinDollarSigns = false
+
+            let currentlyIn = []
+
+            for (let i = 0; i < lines.length; i += 1) {
+                let line = lines[i].innerText
+
+                const grouping = line.split(/\\begin{(.+)}|\\end/)
+                for (let i = 1; i < grouping.length; i += 2) {
+                    if (grouping[i] == undefined) {
+                        currentlyIn.pop() // end
+                    }
+                    else {
+                        currentlyIn.push(grouping[i]) // begin
+                    }
+                }
+
+                if (line.trim() == "") {
+                    // <span class="newLine"><br></span>
+                    if (currentlyIn.length == 0) {
+                        line = '<span class="newLine"><br></span>'
+                    }
+                    else {
+                        line = '<div class="error" style="display: inline-block; width: 100%;"><span class="newLine"><br></span></div>'
+                    }   
+                    
+                }
+
+                line = highlight(/(\\\w+)/, 'latexCmd', line)
+                line = highlight(/(\\\\)/, 'newLine', line)
+                line = highlight(/{(\w+)}/, 'latexCmdSpecifier', line, '{', '}')
+
+                let splitted = line.split(/([$])/)
+                // odds indexes are $
+
+                for (let i = 1; i < splitted.length; i += 2) {
+                    // color all $
+                    splitted[i] = '<span class="dollarSigns">' + splitted[i] + '</span>'
+                }
+
+                function error(textInDollarSigns) {
+                    if (textInDollarSigns.search(/\\end/) != -1 ||
+                        textInDollarSigns.search(/\\begin/) != -1 ||
+                        textInDollarSigns.search(/\\part/) != -1 ||
+                        textInDollarSigns.search(/\\item/) != -1
+                    ) {
+                        return '<span class="error">' + textInDollarSigns + '</span>'
+                    }
+
+                    return textInDollarSigns
+                }
+
+                if (!isWithinDollarSigns) {
+                    for (let i = 2; i < splitted.length; i += 4) {
+                        splitted[i] = '<span class="dollarSigns">' + error(splitted[i]) + '</span>'
+                    }
+                }
+                else {
+                    for (let i = 0; i < splitted.length; i += 4) {
+                        splitted[i] = '<span class="dollarSigns">' + error(splitted[i]) + '</span>'
+                    }
+                }
+
+                if ((splitted.length - 1) % 4 == 0) {
+                    // even count of $ vs $
+                }
+                else {
+                    // uneven
+                    isWithinDollarSigns = !isWithinDollarSigns
+                }
+
+                line = splitted.join('')
+
+                lines[i].innerHTML = line
+            }
+        }
+    </script>
+</body>
+</html>
