@@ -5,7 +5,7 @@
 # layout: home
 ---
 
-# Jonathan's Notes on Varies Things
+# Jonathan's Notes on Various Things
 
 Things I've worked on and might be useful for others.
 
