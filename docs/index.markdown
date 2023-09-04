@@ -5,9 +5,9 @@
 # layout: home
 ---
 
-# Info
+# Jonathan's Notes on Varies Things
 
-content-goes-here
+Things I've worked on and might be useful for others.
 
 <!-- Posts
 - [Name of Link]({% post_url 2023-09-04-integrating-siri-with-octoprint %}) -->
