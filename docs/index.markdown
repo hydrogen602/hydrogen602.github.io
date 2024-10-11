@@ -18,3 +18,7 @@ Things I've worked on and might be useful for others.
     </li>
   {% endfor %}
 </ul>
+
+# About Me
+
+<a href='/about'>About Me</a>
