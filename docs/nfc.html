@@ -1,0 +1,38 @@
+---
+permalink: /nfc/
+layout: null
+title: Redirecting
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Redirecting…</title>
+  </head>
+  <body>
+    <p>
+      Redirecting to
+      <a id="dest" href="https://inventory.hydrogen31415.workers.dev/"
+        >inventory</a
+      >…
+    </p>
+    <noscript>
+      <p>
+        JavaScript must be enabled to follow this link with its item details.
+      </p>
+    </noscript>
+    <script>
+      const dest = new URL("https://inventory.hydrogen31415.workers.dev/");
+      dest.search = window.location.search;
+      dest.hash = window.location.hash;
+      const destUrl = dest.toString();
+
+      const destLink = document.getElementById("dest");
+      destLink.href = destUrl;
+      destLink.textContent = destUrl;
+
+      window.location.replace(destUrl);
+    </script>
+  </body>
+</html>
